@@ -4,7 +4,7 @@ import adapterStatic from '@sveltejs/adapter-static'
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
 import { loadEnv } from 'vite'
 
-/** @type {{ BUILD_ADAPTER: 'auto' | 'node' | 'static', BUILD_BASE: '' | `/${string}` | undefined, BUILD_IPFS: 'false' | 'true' }} */
+/** @type {{ BUILD_ADAPTER: 'auto' | 'node' | 'static', BUILD_BASE: string | undefined, BUILD_IPFS: 'false' | 'true' }} */
 const env = loadEnv(process.env.NODE_ENV ?? 'development', process.cwd(), 'BUILD')
 
 /** @returns {import('@sveltejs/kit').Adapter} */
@@ -17,13 +17,21 @@ function adapter() {
 	return adapterAuto()
 }
 
+// Function to process the base path
+function processBasePath(basePath) {
+	if (!basePath) return ''
+	basePath = basePath.trim()
+	if (basePath === '/') return ''
+	return basePath.startsWith('/') ? basePath : `/${basePath}`
+}
+
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	preprocess: [vitePreprocess()],
 
 	kit: {
 		adapter: adapter(),
-		paths: { base: env.BUILD_BASE },
+		paths: { base: processBasePath(env.BUILD_BASE) },
 	},
 }
 

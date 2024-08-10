@@ -1,29 +1,38 @@
-name: GitHub Pages
-
-on:
-  push:
-    branches: main
-
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    if: ${{ github.actor != 'nektos/act' }}
-
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
           version: latest
-      - uses: actions/setup-node@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           cache: pnpm
           node-version: 21
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm run build
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build project
+        run: pnpm run build
         env:
-          BUILD_BASE: /lmgtfy
-      - uses: actions/upload-pages-artifact@v3
+          BUILD_BASE: /
+
+      - name: List build directory contents
+        run: ls -la build
+
+      - name: Print environment variables
+        run: printenv
+
+      - name: Upload build artifacts
+        uses: actions/upload-pages-artifact@v3
         with:
           path: build
 
@@ -39,7 +48,3 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/deploy-pages@v4
-        id: deployment
