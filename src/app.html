@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<link rel="icon" href="%sveltekit.assets%/google.svg" />
+	<meta name="viewport" content="width=device-width" />
+
+	<meta name="author" content="SERP" />
+	<meta name="keywords" content="Google, Lmgtfy, let me google that for you" />
+
+	<meta property="og:image" content="images/Lmgtfy.png" />
+	<meta property="og:title" content="Let Me Google That For You (lmgtfy)" />
+
+	<!-- Prevents the white flash on page load -->
+	<script>
+		const brightness = localStorage.getItem('brightness');
+
+		if (brightness === 'light') document.documentElement.classList.remove('dark');
+		else if (brightness === 'dark' || matchMedia('(prefers-color-scheme: dark)').matches)
+			document.documentElement.classList.add('dark')
+	</script>
+
+	%sveltekit.head%
+</head>
+
+<body data-sveltekit-preload-data="hover" class="bg-zinc-50 dark:bg-zinc-800">
+	<div style="display: contents">%sveltekit.body%</div>
+</body>
+
+</html>
